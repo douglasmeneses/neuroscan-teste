@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, Platform } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import { initDatabase, isWeb } from "@/lib/database/db";
+import WebContainer from "@/components/layout/WebContainer";
 
 interface SensorRecord {
   id: number;
@@ -12,6 +13,33 @@ interface SensorRecord {
   eixo_z: number;
 }
 
+function parseWebRows(columns: string[], values: any[][]): SensorRecord[] {
+  return values.map((row) => {
+    const obj: Record<string, any> = {};
+    columns.forEach((col, i) => {
+      obj[col] = row[i];
+    });
+    return obj as SensorRecord;
+  });
+}
+
+async function fetchWebData(db: any): Promise<SensorRecord[]> {
+  const res = db.exec("SELECT * FROM sensor_data ORDER BY id DESC");
+  if (res.length === 0) return [];
+  const { columns, values } = res[0];
+  return parseWebRows(columns, values);
+}
+
+async function fetchMobileData(db: any): Promise<SensorRecord[]> {
+  let result: SensorRecord[] = [];
+  await db.withTransactionAsync(async () => {
+    result = (await db.getAllAsync(
+      "SELECT * FROM sensor_data ORDER BY id DESC",
+    )) as SensorRecord[];
+  });
+  return result;
+}
+
 export default function ResultSensors() {
   const [dados, setDados] = useState<SensorRecord[]>([]);
 
@@ -19,30 +47,8 @@ export default function ResultSensors() {
     const fetchData = async () => {
       try {
         const db = await initDatabase();
-
-        if (isWeb) {
-          const res = db.exec("SELECT * FROM sensor_data ORDER BY id DESC");
-          if (res.length > 0) {
-            const { columns, values } = res[0];
-            const data: SensorRecord[] = values.map((row: any[]) => {
-              const obj: any = {};
-              columns.forEach((col: string, i: number) => {
-                obj[col] = row[i];
-              });
-              return obj as SensorRecord;
-            });
-            setDados(data);
-          } else {
-            setDados([]);
-          }
-        } else {
-          await db.withTransactionAsync(async () => {
-            const result = await db.getAllAsync(
-              "SELECT * FROM sensor_data ORDER BY id DESC"
-            );
-            setDados(result as SensorRecord[]);
-          });
-        }
+        const data = isWeb ? await fetchWebData(db) : await fetchMobileData(db);
+        setDados(data);
       } catch (error) {
         console.error("Erro ao buscar dados do sensor:", error);
       }
@@ -52,24 +58,28 @@ export default function ResultSensors() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Leituras do Sensor</Text>
-      <FlatList
-        data={dados}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text style={styles.text}>Formulário: {item.formulario}</Text>
-            <Text style={styles.text}>Pergunta: {item.numero_pergunta}</Text>
-            <Text style={styles.text}>Sensor: {item.sensor.toUpperCase()}</Text>
-            <Text style={styles.text}>
-              X: {item.eixo_x.toFixed(2)} | Y: {item.eixo_y.toFixed(2)} | Z:{" "}
-              {item.eixo_z?.toFixed(2) ?? "0.00"}
-            </Text>
-          </View>
-        )}
-      />
-    </View>
+    <WebContainer size="lg">
+      <View style={styles.container}>
+        <Text style={styles.title}>Leituras do Sensor</Text>
+        <FlatList
+          data={dados}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <Text style={styles.text}>Formulário: {item.formulario}</Text>
+              <Text style={styles.text}>Pergunta: {item.numero_pergunta}</Text>
+              <Text style={styles.text}>
+                Sensor: {item.sensor.toUpperCase()}
+              </Text>
+              <Text style={styles.text}>
+                X: {item.eixo_x.toFixed(2)} | Y: {item.eixo_y.toFixed(2)} | Z:{" "}
+                {item.eixo_z?.toFixed(2) ?? "0.00"}
+              </Text>
+            </View>
+          )}
+        />
+      </View>
+    </WebContainer>
   );
 }
 

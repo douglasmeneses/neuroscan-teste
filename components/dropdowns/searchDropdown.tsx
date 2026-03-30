@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import {
+  Colors,
+  FontSizes,
+  Spacing,
+  BorderRadius,
+} from "@/lib/constants/theme";
 
 interface ISelectItem {
   label: string;
@@ -8,12 +14,12 @@ interface ISelectItem {
 }
 
 interface SearchDropdownProps {
-  label?: string;
-  data: ISelectItem[];
-  placeholder?: string;
-  searchPlaceholder?: string;
-  onChange?: (item: ISelectItem | null) => void;
-  width?: any;
+  readonly label?: string;
+  readonly data: ISelectItem[];
+  readonly placeholder?: string;
+  readonly searchPlaceholder?: string;
+  readonly onChange?: (item: ISelectItem | null) => void;
+  readonly width?: any;
 }
 
 export default function SearchDropdown({
@@ -25,8 +31,6 @@ export default function SearchDropdown({
   width = "100%",
 }: SearchDropdownProps) {
   const [value, setValue] = useState<string | null>(null);
-
-  const selectedItem = data.find((item) => item.value === value) || null;
 
   const handleChange = (item: ISelectItem) => {
     setValue(item.value);
@@ -54,7 +58,6 @@ export default function SearchDropdown({
         itemContainerStyle={styles.itemContainer}
         itemTextStyle={styles.itemText}
         activeColor="#e6f0ff"
-
         inputSearchStyle={styles.searchInput}
       />
     </View>
@@ -63,42 +66,41 @@ export default function SearchDropdown({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
+    marginVertical: Spacing.sm,
   },
   label: {
-    marginBottom: 8,
-    fontSize: 16,
+    marginBottom: Spacing.xs,
+    fontSize: FontSizes.md,
     fontWeight: "600",
-    color: "#7189BC",
+    color: Colors.textSecondary,
   },
   dropdown: {
     height: 50,
-    borderColor: "#ccc",
+    borderColor: Colors.border,
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    backgroundColor: "#fff",
+    borderRadius: BorderRadius.sm,
+    paddingHorizontal: Spacing.sm,
+    backgroundColor: Colors.white,
   },
   itemContainer: {
     borderBottomColor: "#eee",
   },
   itemText: {
-    fontSize: 16,
-    color: "#333",
+    fontSize: FontSizes.md,
+    color: Colors.text,
   },
   selectedText: {
-    fontSize: 16,
-    color: "#333",
+    fontSize: FontSizes.md,
+    color: Colors.text,
   },
   placeholder: {
-    fontSize: 16,
-    color: "#999",
+    fontSize: FontSizes.md,
+    color: Colors.textMuted,
   },
-
   searchInput: {
     borderWidth: 0,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: Colors.background,
     height: 40,
-    borderRadius: 8,
+    borderRadius: BorderRadius.sm,
   },
 });

@@ -1,30 +1,38 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+import {
+  Colors,
+  Spacing,
+  FontSizes,
+  BorderRadius,
+} from "@/lib/constants/theme";
 
 type ButtonProps = {
-  title: string;
-  onPress: () => void;
-  disabled?: boolean;
-  color?: string;
+  readonly title: string;
+  readonly onPress: () => void;
+  readonly disabled?: boolean;
+  readonly color?: string;
 };
 
 export default function BtnForm({
   title,
   onPress,
   disabled = false,
-  color = "#0033A0",
+  color = Colors.primary,
 }: ButtonProps) {
   return (
-    <View style={{ alignItems: "center" }}>
+    <View style={styles.wrapper}>
       <TouchableOpacity
         style={[
           styles.button,
-          { backgroundColor: disabled ? "#A9A9A9" : color },
+          { backgroundColor: disabled ? Colors.disabled : color },
         ]}
         onPress={onPress}
         disabled={disabled}
       >
-        <Text style={[styles.buttonText, disabled && styles.buttonTextDisabled]}>
+        <Text
+          style={[styles.buttonText, disabled && styles.buttonTextDisabled]}
+        >
           {title}
         </Text>
       </TouchableOpacity>
@@ -33,17 +41,21 @@ export default function BtnForm({
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "#0033A0",
-    padding: 16,
-    borderRadius: 16,
+  wrapper: {
     alignItems: "center",
-    marginTop: 10,
-    width: 250
+  },
+  button: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xxl,
+    borderRadius: BorderRadius.lg,
+    alignItems: "center",
+    marginTop: Spacing.sm,
+    width: "100%",
+    maxWidth: 400,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: Colors.white,
+    fontSize: FontSizes.md,
     fontWeight: "bold",
   },
   buttonTextDisabled: {

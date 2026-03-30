@@ -1,115 +1,141 @@
 import { router } from "expo-router";
-import { View, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+import WebContainer from "@/components/layout/WebContainer";
+import {
+  Colors,
+  FontSizes,
+  Spacing,
+  BorderRadius,
+} from "@/lib/constants/theme";
 
 export default function TermoParticipacao() {
-    const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
-    return (
-        <View style={styles.container}>
-            <View style={{ alignItems: "center" }}>
-                <View style={styles.card}>
-                    <Text style={styles.sectionTitle}>Participação</Text>
-                    <Text style={styles.paragraph}>
-                        Após a leitura do documento e tendo minhas dúvidas esclarecidas pelos pesquisadores, eu concordo em participar deste estudo como voluntário.
-                    </Text>
-
-                    <Text style={styles.paragraph}>
-                        Fui devidamente informado sobre os procedimentos, possíveis riscos e benefícios.
-                    </Text>
-
-                    <Text style={styles.paragraph}>
-                        Entendo que posso retirar meu consentimento a qualquer momento sem penalidade.
-                    </Text>
-                </View>
-
-                {/* Checkbox de aceitação */}
-                <TouchableWithoutFeedback onPress={() => setIsChecked(!isChecked)}>
-                    <View style={styles.checkboxContainer}>
-                        <View style={[styles.checkbox, isChecked && styles.checked]}>
-                            {isChecked && <Ionicons name="checkmark" size={16} color="#007BFF" />}
-                        </View>
-                        <Text style={styles.checkboxLabel}>Aceito participar da pesquisa</Text>
-                    </View>
-                </TouchableWithoutFeedback>
-            </View>
-
-            <View style={{ alignItems: "center", marginTop: 20 }}>
-                <TouchableOpacity 
-                    style={[styles.button, !isChecked && styles.buttonDisabled]} 
-                    onPress={() => router.push("/termoSensores")}
-                    disabled={!isChecked}
-                >
-                    <Text style={styles.buttonText}>Próximo</Text>
-                </TouchableOpacity>
-            </View>
+  return (
+    <WebContainer contentStyle={styles.container} size="sm">
+      <View style={styles.centerContent}>
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>Participação</Text>
+          <Text style={styles.paragraph}>
+            Após a leitura do documento e tendo minhas dúvidas esclarecidas
+            pelos pesquisadores, eu concordo em participar deste estudo como
+            voluntário.
+          </Text>
+          <Text style={styles.paragraph}>
+            Fui devidamente informado sobre os procedimentos, possíveis riscos e
+            benefícios.
+          </Text>
+          <Text style={styles.paragraph}>
+            Entendo que posso retirar meu consentimento a qualquer momento sem
+            penalidade.
+          </Text>
         </View>
-    )
+
+        <TouchableWithoutFeedback onPress={() => setIsChecked(!isChecked)}>
+          <View style={styles.checkboxContainer}>
+            <View style={[styles.checkbox, isChecked && styles.checked]}>
+              {isChecked && (
+                <Ionicons
+                  name="checkmark"
+                  size={16}
+                  color={Colors.checkboxBorder}
+                />
+              )}
+            </View>
+            <Text style={styles.checkboxLabel}>
+              Aceito participar da pesquisa
+            </Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+
+      <View style={styles.buttonWrapper}>
+        <TouchableOpacity
+          style={[styles.button, !isChecked && styles.buttonDisabled]}
+          onPress={() => router.push("/experimentoToque")}
+          disabled={!isChecked}
+        >
+          <Text style={styles.buttonText}>Próximo</Text>
+        </TouchableOpacity>
+      </View>
+    </WebContainer>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignContent: "center",
-        justifyContent: "center",
-        padding: 20,
-        backgroundColor: "#f4f4f4",
-    },
-    card: {
-        backgroundColor: "#DEE6F5",
-        borderRadius: 16,
-        padding: 20,
-        marginBottom: 20,
-    },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "#0839A2",
-        marginBottom: 10,
-    },
-    paragraph: {
-        fontSize: 16,
-        color: "#395281",
-        lineHeight: 22,
-        marginBottom: 10,
-    },
-    checkboxContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginBottom: 20,
-    },
-    checkbox: {
-        width: 20,
-        height: 20,
-        borderWidth: 2,
-        borderColor: "#007BFF",
-        borderRadius: 4,
-        marginRight: 10,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    checked: {
-        backgroundColor: "rgba(0, 123, 255, 0.1)",
-    },
-    checkboxLabel: {
-        fontSize: 16,
-        color: "#333",
-    },
-    button: {
-        backgroundColor: "#0033A0",
-        padding: 15,
-        borderRadius: 28,
-        alignItems: "center",
-        marginTop: 30,
-        width: "25%",
-    },
-    buttonDisabled: {
-        backgroundColor: "#cccccc",
-    },
-    buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    padding: Spacing.lg,
+  },
+  centerContent: {
+    alignItems: "center",
+  },
+  card: {
+    backgroundColor: Colors.card,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.lg,
+    marginBottom: Spacing.lg,
+  },
+  sectionTitle: {
+    fontSize: FontSizes.lg,
+    fontWeight: "bold",
+    color: Colors.primaryDark,
+    marginBottom: Spacing.sm,
+  },
+  paragraph: {
+    fontSize: FontSizes.md,
+    color: Colors.textMuted,
+    lineHeight: 22,
+    marginBottom: Spacing.sm,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: Spacing.lg,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: Colors.checkboxBorder,
+    borderRadius: BorderRadius.sm,
+    marginRight: Spacing.sm,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  checked: {
+    backgroundColor: Colors.checkboxActive,
+  },
+  checkboxLabel: {
+    fontSize: FontSizes.md,
+    color: Colors.text,
+  },
+  buttonWrapper: {
+    alignItems: "center",
+    marginTop: Spacing.lg,
+  },
+  button: {
+    backgroundColor: Colors.primary,
+    padding: 15,
+    borderRadius: BorderRadius.pill,
+    alignItems: "center",
+    paddingHorizontal: 40,
+  },
+  buttonDisabled: {
+    backgroundColor: Colors.disabled,
+  },
+  buttonText: {
+    color: Colors.white,
+    fontSize: FontSizes.md,
+    fontWeight: "bold",
+  },
 });

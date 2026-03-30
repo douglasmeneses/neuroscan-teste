@@ -1,7 +1,7 @@
 // === SEU CÓDIGO COMPLETO — SOMENTE ALTEREI O ENVIO DO ARQUIVO ===
 
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Platform, Alert } from "react-native";
+import { View, Text, StyleSheet, Platform, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import pako from "pako";
 
@@ -10,8 +10,13 @@ import BtnForm from "@/components/buttons/btnForm";
 import { useSensorLoggerMobile } from "@/lib/hooks/useSensorLoggerMobile";
 import { useSensorLoggerWeb } from "@/lib/hooks/useSensorLoggerWeb";
 import { useRequest } from "@/lib/hooks/useRequest";
-import { useAccelerometerWeb, useGyroscopeWeb } from "@/lib/hooks/useSampleSensor";
+import {
+  useAccelerometerWeb,
+  useGyroscopeWeb,
+} from "@/lib/hooks/useSampleSensor";
 import { useUserStore } from "@/lib/stores/useUserStore";
+import WebContainer from "@/components/layout/WebContainer";
+import { Colors } from "@/lib/constants/theme";
 
 const formatBytes = (bytes: number) => {
   if (bytes < 1024) return bytes + " bytes";
@@ -61,10 +66,16 @@ export default function QuestionnaireTemplate({
   const [tempoRespostaRegistrado, setTempoRespostaRegistrado] = useState(false);
   const [startTime, setStartTime] = useState<Date>(new Date());
 
-  const { samples: accelerometerSamples, start: startAccel, pause: pauseAccel } =
-    useAccelerometerWeb(currentIndex);
-  const { samples: gyroscopeSamples, start: startGyro, pause: pauseGyro } =
-    useGyroscopeWeb(currentIndex);
+  const {
+    samples: accelerometerSamples,
+    start: startAccel,
+    pause: pauseAccel,
+  } = useAccelerometerWeb(currentIndex);
+  const {
+    samples: gyroscopeSamples,
+    start: startGyro,
+    pause: pauseGyro,
+  } = useGyroscopeWeb(currentIndex);
 
   const { loading } = useRequest();
   const current = questions[currentIndex];
@@ -125,12 +136,11 @@ export default function QuestionnaireTemplate({
           timestamp: acc.timestamp,
         };
 
-        const accTimestamp =
-          acc.timestamp
-            ? (typeof acc.timestamp === "string"
-                ? new Date(acc.timestamp).getTime()
-                : acc.timestamp)
-            : timestampInicial;
+        const accTimestamp = acc.timestamp
+          ? typeof acc.timestamp === "string"
+            ? new Date(acc.timestamp).getTime()
+            : acc.timestamp
+          : timestampInicial;
 
         const offset = accTimestamp - timestampInicial;
 
@@ -185,7 +195,7 @@ export default function QuestionnaireTemplate({
       formData.append(
         "file",
         blob,
-        `dados_sensores_pergunta_${currentIndex + 1}.gz`
+        `dados_sensores_pergunta_${currentIndex + 1}.gz`,
       );
 
       const response = await fetch(endpoint!, {
@@ -198,7 +208,6 @@ export default function QuestionnaireTemplate({
       }
 
       console.log("📤 Arquivo .gz enviado com sucesso!");
-
     } catch (err: any) {
       console.error("❌ Erro ao enviar dados:", err);
       Alert.alert("Erro", err.message || "Falha ao enviar respostas");
@@ -213,33 +222,35 @@ export default function QuestionnaireTemplate({
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={{ alignItems: "flex-start" }}>
-        <Text style={{ color: "#0839A2", fontSize: 16 }}>
-          PERGUNTA {currentIndex + 1} de {questions.length}
-        </Text>
-        <Text style={styles.question}>{current.text}</Text>
+    <WebContainer scroll backgroundColor={Colors.background} size="md">
+      <View style={styles.container}>
+        <View style={{ alignItems: "flex-start" }}>
+          <Text style={{ color: Colors.primaryDark, fontSize: 16 }}>
+            PERGUNTA {currentIndex + 1} de {questions.length}
+          </Text>
+          <Text style={styles.question}>{current.text}</Text>
+        </View>
+
+        <OptionGroup
+          options={current.options}
+          selected={respostaAtual}
+          onSelect={handleAnswer}
+        />
+
+        <BtnForm
+          title={
+            currentIndex === questions.length - 1
+              ? loading
+                ? "Enviando..."
+                : "Finalizar"
+              : "Próximo"
+          }
+          color={Colors.accent}
+          onPress={handleNext}
+          disabled={respostaAtual === null || loading}
+        />
       </View>
-
-      <OptionGroup
-        options={current.options}
-        selected={respostaAtual}
-        onSelect={handleAnswer}
-      />
-
-      <BtnForm
-        title={
-          currentIndex === questions.length - 1
-            ? loading
-              ? "Enviando..."
-              : "Finalizar"
-            : "Próximo"
-        }
-        color="#4F46E5"
-        onPress={handleNext}
-        disabled={respostaAtual === null || loading}
-      />
-    </ScrollView>
+    </WebContainer>
   );
 }
 
@@ -254,6 +265,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 30,
-    color: "#7189BC",
+    color: Colors.textSecondary,
   },
 });

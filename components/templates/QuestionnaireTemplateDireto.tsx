@@ -1,18 +1,20 @@
 import { useEffect, useState, useRef } from "react";
-import { View, Text, StyleSheet, ScrollView, Platform, Alert } from "react-native";
+import { View, Text, StyleSheet, Platform, Alert } from "react-native";
 import { useRouter } from "expo-router";
 
 import OptionGroup from "@/components/groupButtons/OptionGroup";
 import BtnForm from "@/components/buttons/btnForm";
 
 import { useSensorLoggerMobile } from "@/lib/hooks/useSensorLoggerMobile";
-import { useAccelerometerWeb, useGyroscopeWeb } from "@/lib/hooks/useSampleSensor";
-
-import { useRequest } from "@/lib/hooks/useRequest";
-import { useUserStore } from "@/lib/stores/useUserStore";
-
+import {
+  useAccelerometerWeb,
+  useGyroscopeWeb,
+} from "@/lib/hooks/useSampleSensor";
 
 import { TopLoading } from "@/components/loadings/topLoading";
+import { useUserStore } from "@/lib/stores/useUserStore";
+import WebContainer from "@/components/layout/WebContainer";
+import { Colors } from "@/lib/constants/theme";
 
 interface Question {
   text: string;
@@ -20,10 +22,10 @@ interface Question {
 }
 
 interface QuestionnaireTemplateProps {
-  initialId: number;
-  questions: Question[];
-  sensorKey: string;
-  store: {
+  readonly initialId: number;
+  readonly questions: Question[];
+  readonly sensorKey: string;
+  readonly store: {
     respostas: any;
     setResposta: (index: number, value: number) => void;
     incrementaClique: (index: number, value: number) => void;
@@ -31,8 +33,8 @@ interface QuestionnaireTemplateProps {
     setTempoResposta: (index: number, tempo: number) => void;
     resetResposta: (index: number, fullReset?: boolean) => void;
   };
-  finishRoute: string;
-  endpoint?: string;
+  readonly finishRoute: string;
+  readonly endpoint?: string;
 }
 
 export default function QuestionnaireTemplateDireto({
@@ -69,7 +71,6 @@ export default function QuestionnaireTemplateDireto({
     clear: clearGyro,
   } = useGyroscopeWeb(currentIndex);
 
-  const { loading } = useRequest();
   const current = questions[currentIndex];
 
   // MOBILE sensors
@@ -101,12 +102,9 @@ export default function QuestionnaireTemplateDireto({
 
   const getElapsedSeconds = () => {
     if (!questionStartTimeRef.current) return 0;
-    return Number(((Date.now() - questionStartTimeRef.current) / 1000).toFixed(2));
-  };
-
-  const getTotalElapsedSeconds = () => {
-    if (!startTimeRef.current) return 0;
-    return Number(((Date.now() - startTimeRef.current) / 1000).toFixed(2));
+    return Number(
+      ((Date.now() - questionStartTimeRef.current) / 1000).toFixed(2),
+    );
   };
 
   // Responder
@@ -130,11 +128,10 @@ export default function QuestionnaireTemplateDireto({
     setIsSubmitting(true);
 
     const tempoTotalPergunta = getElapsedSeconds();
-    const tempoTotalQuestionario = getTotalElapsedSeconds();
 
     try {
       store.setTempo(currentIndex, tempoTotalPergunta);
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       if (Platform.OS === "web") {
         pauseAccel();
@@ -147,7 +144,8 @@ export default function QuestionnaireTemplateDireto({
       const firstAccTs = accelerometerSamples[0]?.timestamp ?? null;
       const firstGyroTs = gyroscopeSamples[0]?.timestamp ?? null;
 
-      let timestampInicial = firstAccTs || firstGyroTs || questionStartTimeRef.current;
+      let timestampInicial =
+        firstAccTs || firstGyroTs || questionStartTimeRef.current;
 
       if (typeof timestampInicial === "string") {
         timestampInicial = new Date(timestampInicial).getTime();
@@ -166,7 +164,7 @@ export default function QuestionnaireTemplateDireto({
               const tsAcc =
                 typeof acc.timestamp === "string"
                   ? new Date(acc.timestamp).getTime()
-                  : acc.timestamp ?? timestampInicial;
+                  : (acc.timestamp ?? timestampInicial);
 
               const offset = tsAcc - timestampInicial;
 
@@ -183,7 +181,7 @@ export default function QuestionnaireTemplateDireto({
           : [];
 
       const payload = {
-        usuario_id: 1,
+        usuario_id: user.id ?? 1,
         pergunta_id: initialId + currentIndex,
         resposta: r.resposta,
         duracao: duracaoFinal,
@@ -220,56 +218,45 @@ export default function QuestionnaireTemplateDireto({
     }
   };
 
+  const getButtonTitle = (): string => {
+    if (isSubmitting) return "Enviando...";
+    return currentIndex === questions.length - 1 ? "Finalizar" : "Próximo";
+  };
+
   return (
-    <>
-      {/* 👉 Loading discreto no topo */}
+    <WebContainer scroll backgroundColor={Colors.background} size="md">
       <TopLoading visible={isSubmitting} />
 
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={{ alignItems: "flex-start" }}>
-          <Text style={{ color: "#0839A2", fontSize: 16 }}>
-            PERGUNTA {currentIndex + 1} de {questions.length}
-          </Text>
+      <View style={{ alignItems: "flex-start" }}>
+        <Text style={{ color: Colors.primaryDark, fontSize: 16 }}>
+          PERGUNTA {currentIndex + 1} de {questions.length}
+        </Text>
 
-          <Text style={styles.question}>{current.text}</Text>
-        </View>
+        <Text style={styles.question}>{current.text}</Text>
+      </View>
 
-        <OptionGroup
-          options={current.options}
-          selected={respostaAtual}
-          onSelect={handleAnswer}
-        />
+      <OptionGroup
+        options={current.options}
+        selected={respostaAtual}
+        onSelect={handleAnswer}
+      />
 
-        <BtnForm
-          title={
-            currentIndex === questions.length - 1
-              ? isSubmitting
-                ? "Enviando..."
-                : "Finalizar"
-              : isSubmitting
-              ? "Enviando..."
-              : "Próximo"
-          }
-          color="#4F46E5"
-          onPress={handleNext}
-          disabled={respostaAtual === null || isSubmitting}
-        />
-      </ScrollView>
-    </>
+      <BtnForm
+        title={getButtonTitle()}
+        color="#4F46E5"
+        onPress={handleNext}
+        disabled={respostaAtual === null || isSubmitting}
+      />
+    </WebContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    justifyContent: "center",
-  },
   question: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 30,
-    color: "#7189BC",
+    color: Colors.textSecondary,
   },
 });

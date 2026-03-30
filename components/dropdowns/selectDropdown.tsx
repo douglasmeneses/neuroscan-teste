@@ -1,14 +1,15 @@
 import React from "react";
-import { StyleSheet, View, Text, ViewStyle } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import Select, { ISelectItem } from "rn-custom-select-dropdown";
+import { Colors, FontSizes, Spacing } from "@/lib/constants/theme";
 
 type Props<T> = {
-  items: Array<ISelectItem<T>>;
-  value: ISelectItem<T> | null;
-  onChange: (item: ISelectItem<T>) => void;
-  placeholder?: string;
-  label?: string;
-  width?: any; // ← nova prop
+  readonly items: Array<ISelectItem<T>>;
+  readonly value: ISelectItem<T> | null;
+  readonly onChange: (item: ISelectItem<T>) => void;
+  readonly placeholder?: string;
+  readonly label?: string;
+  readonly width?: any;
 };
 
 export default function CustomSelectDropdown<T>({
@@ -34,12 +35,12 @@ export default function CustomSelectDropdown<T>({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
+    marginVertical: Spacing.sm,
   },
   label: {
-    marginBottom: 8,
-    fontSize: 16,
+    marginBottom: Spacing.xs,
+    fontSize: FontSizes.md,
     fontWeight: "600",
-    color: "#7189BC",
+    color: Colors.textSecondary,
   },
 });

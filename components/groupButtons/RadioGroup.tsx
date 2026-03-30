@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ViewStyle,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Colors, FontSizes, Spacing } from "@/lib/constants/theme";
 
 type Option<T> = {
   label: string;
@@ -13,11 +8,11 @@ type Option<T> = {
 };
 
 type Props<T> = {
-  options: Option<T>[];
-  value: T | null;
-  onChange: (value: T) => void;
-  label?: string;
-  horizontal?: boolean;
+  readonly options: Option<T>[];
+  readonly value: T | null;
+  readonly onChange: (value: T) => void;
+  readonly label?: string;
+  readonly horizontal?: boolean;
 };
 
 export default function RadioGroup<T>({
@@ -68,46 +63,46 @@ export default function RadioGroup<T>({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
-    alignItems: "center", // mantém o label centralizado
+    marginVertical: Spacing.sm,
+    alignItems: "center",
   },
   groupLabel: {
-    fontSize: 16,
+    fontSize: FontSizes.md,
     fontWeight: "600",
-    marginBottom: 8,
-    color: "#7189BC",
+    marginBottom: Spacing.xs,
+    color: Colors.textSecondary,
     textAlign: "center",
   },
   optionsContainer: {
     flexDirection: "column",
-    alignItems: "flex-start", // <- ALINHA OS ITENS À ESQUERDA
+    alignItems: "flex-start",
   },
   radioItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: Spacing.sm,
   },
   radioCircle: {
     height: 20,
     width: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: "#7189BC",
+    borderColor: Colors.textSecondary,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 10,
+    marginRight: Spacing.sm,
   },
   radioCircleSelected: {
-    borderColor: "#0839A2",
+    borderColor: Colors.primaryDark,
   },
   radioDot: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: "#0839A2",
+    backgroundColor: Colors.primaryDark,
   },
   radioLabel: {
-    fontSize: 16,
-    color: "#333",
+    fontSize: FontSizes.md,
+    color: Colors.text,
   },
 });

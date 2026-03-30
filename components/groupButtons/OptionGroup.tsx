@@ -1,6 +1,12 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import {
+  Colors,
+  FontSizes,
+  Spacing,
+  BorderRadius,
+} from "@/lib/constants/theme";
 
 type Option = {
   id: number;
@@ -8,9 +14,9 @@ type Option = {
 };
 
 type Props = {
-  options: Option[];
-  selected: number | null;
-  onSelect: (id: number) => void;
+  readonly options: Option[];
+  readonly selected: number | null;
+  readonly onSelect: (id: number) => void;
 };
 
 export default function OptionGroup({ options, selected, onSelect }: Props) {
@@ -21,19 +27,18 @@ export default function OptionGroup({ options, selected, onSelect }: Props) {
         return (
           <TouchableOpacity
             key={option.id}
-            style={[
-              styles.option,
-              isSelected && styles.optionSelected,
-            ]}
+            style={[styles.option, isSelected && styles.optionSelected]}
             onPress={() => onSelect(option.id)}
           >
             <View style={styles.checkboxContainer}>
-              <View style={[styles.checkbox, isSelected && styles.checkboxChecked]}>
+              <View
+                style={[styles.checkbox, isSelected && styles.checkboxChecked]}
+              >
                 {isSelected && (
                   <Ionicons name="checkmark" size={12} color="#fff" />
                 )}
               </View>
-              <Text 
+              <Text
                 style={styles.optionText}
                 numberOfLines={0} // Permite múltiplas linhas
                 ellipsizeMode="tail" // Adiciona "..." se necessário
@@ -51,41 +56,41 @@ export default function OptionGroup({ options, selected, onSelect }: Props) {
 const styles = StyleSheet.create({
   option: {
     flexDirection: "row",
-    alignItems: "flex-start", // Alinha ao topo para múltiplas linhas
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 12,
-    backgroundColor: "#DEE6F5",
+    alignItems: "flex-start",
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
+    marginBottom: Spacing.sm,
+    backgroundColor: Colors.optionBg,
   },
   optionSelected: {
     backgroundColor: "rgba(56, 60, 64, 0.18)",
   },
   checkboxContainer: {
     flexDirection: "row",
-    alignItems: "flex-start", // Alinha ao topo
-    flex: 1, // Ocupa todo o espaço disponível
+    alignItems: "flex-start",
+    flex: 1,
   },
   checkbox: {
     width: 20,
     height: 20,
     borderWidth: 2,
-    borderColor: "#7189BC",
+    borderColor: Colors.textSecondary,
     borderRadius: 10,
-    marginRight: 12,
+    marginRight: Spacing.sm,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
-    marginTop: 2, // Pequeno ajuste para alinhar com o texto
+    backgroundColor: Colors.white,
+    marginTop: 2,
   },
   checkboxChecked: {
-    backgroundColor: "#007BFF",
+    backgroundColor: Colors.accent,
   },
   optionText: {
-    fontSize: 16,
-    color: "#7189BC",
-    flexShrink: 1, // Permite encolher
-    flexWrap: "wrap", // Permite quebra de linha
-    flex: 1, // Ocupa o espaço restante
+    fontSize: FontSizes.md,
+    color: Colors.textSecondary,
+    flexShrink: 1,
+    flexWrap: "wrap",
+    flex: 1,
     fontWeight: "600",
   },
 });

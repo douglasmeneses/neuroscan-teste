@@ -1,17 +1,20 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { initializeDatabase } from "@/lib/database/initializeDatabase";
+import WebContainer from "@/components/layout/WebContainer";
+import {
+  Colors,
+  FontSizes,
+  Spacing,
+  BorderRadius,
+} from "@/lib/constants/theme";
 
-//@ts-ignore
-import logo from '@/assets/images/appImages/logo.png';
+// @ts-ignore
+import logo from "@/assets/images/appImages/logo.png";
 
 export default function Index() {
   const router = useRouter();
-
-  const handleStart = () => {
-    router.replace("/testeSensor");
-  };
 
   useEffect(() => {
     (async () => {
@@ -23,38 +26,37 @@ export default function Index() {
     })();
   }, []);
 
+  const handleStart = () => router.replace("/sobre");
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.logo}>
-        <Image source={logo} />
-      </View>
+    <WebContainer backgroundColor={Colors.primary} size="full">
+      <View style={styles.container}>
+        <View style={styles.logo}>
+          <Image source={logo} />
+        </View>
 
-      <View style={styles.welcomeContainer}>
-        <Text style={styles.title}>Seja{"\n"}bem vindo!</Text>
-      </View>
+        <View style={styles.welcomeContainer}>
+          <Text style={styles.title}>Seja{"\n"}bem vindo!</Text>
+        </View>
 
-      <View style={styles.bottomCurve}>
-        <TouchableOpacity style={styles.button} onPress={handleStart}>
-          <Text style={styles.buttonText}>Vamos lá!</Text>
-        </TouchableOpacity>
+        <View style={styles.bottomCurve}>
+          <TouchableOpacity style={styles.button} onPress={handleStart}>
+            <Text style={styles.buttonText}>Vamos lá!</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </SafeAreaView>
+    </WebContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0033A0",
     justifyContent: "space-between",
   },
   logo: {
-    marginTop: 40,
+    marginTop: Spacing.xxl,
     alignSelf: "center",
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-    textTransform: "uppercase",
   },
   welcomeContainer: {
     flex: 1,
@@ -62,28 +64,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 32,
+    fontSize: FontSizes.xxl,
     fontWeight: "bold",
-    color: "#fff",
+    color: Colors.white,
     textAlign: "center",
     lineHeight: 40,
   },
   bottomCurve: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.white,
     borderTopLeftRadius: 60,
     borderTopRightRadius: 60,
-    paddingVertical: 40,
+    paddingVertical: Spacing.xxl,
     alignItems: "center",
   },
   button: {
-    backgroundColor: "#0033A0",
+    backgroundColor: Colors.primary,
     paddingVertical: 15,
     paddingHorizontal: 50,
-    borderRadius: 30,
+    borderRadius: BorderRadius.circle,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: Colors.white,
+    fontSize: FontSizes.md,
     fontWeight: "bold",
   },
 });

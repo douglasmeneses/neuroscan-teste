@@ -1,7 +1,20 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { useRouter } from "expo-router";
 import useInicialForm from "@/lib/stores/useInicialForm";
 import GraficoRadar from "@/components/graphics/graficoRadar";
+import WebContainer from "@/components/layout/WebContainer";
+import {
+  Colors,
+  FontSizes,
+  Spacing,
+  BorderRadius,
+} from "@/lib/constants/theme";
 
 export default function Result() {
   const router = useRouter();
@@ -15,26 +28,37 @@ export default function Result() {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Resultado geral</Text>
+    <WebContainer scroll backgroundColor={Colors.backgroundLight} size="lg">
+      <View style={styles.container}>
+        <Text style={styles.title}>Resultado geral</Text>
 
-      <GraficoRadar />
+        <GraficoRadar />
 
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.button} onPress={() => router.push("/resultDass")}>
-          <Text style={styles.buttonText}>Ver Resultado DASS</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => router.push("/resultCapc")}>
-          <Text style={styles.buttonText}>Ver Resultado CAPC</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => router.push("/resultFfmq")}>
-          <Text style={styles.buttonText}>Ver Resultado FFMQ</Text>
-        </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.button} onPress={() => router.push("/resultSensors")}>
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.push("/resultDass")}
+          >
+            <Text style={styles.buttonText}>Ver Resultado DASS</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.push("/resultCapc")}
+          >
+            <Text style={styles.buttonText}>Ver Resultado CAPC</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.push("/resultFfmq")}
+          >
+            <Text style={styles.buttonText}>Ver Resultado FFMQ</Text>
+          </TouchableOpacity>
+          {/* <TouchableOpacity style={styles.button} onPress={() => router.push("/resultSensors")}>
           <Text style={styles.buttonText}>Ver Resultado Sensores</Text>
         </TouchableOpacity> */}
+        </View>
       </View>
-    </View>
+    </WebContainer>
   );
 }
 

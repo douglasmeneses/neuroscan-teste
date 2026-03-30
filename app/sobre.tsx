@@ -1,19 +1,24 @@
-import { router } from 'expo-router';
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import Collapsible from 'react-native-collapsible';
-import { AntDesign, Feather } from '@expo/vector-icons';
+import { router } from "expo-router";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import Collapsible from "react-native-collapsible";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import WebContainer from "@/components/layout/WebContainer";
+import {
+  Colors,
+  FontSizes,
+  Spacing,
+  BorderRadius,
+} from "@/lib/constants/theme";
 
 export default function Sobre() {
   const [collapsed1, setCollapsed1] = useState(true);
   const [collapsed2, setCollapsed2] = useState(true);
 
-  function handlePress() {
-    router.replace("/termoParticipacao");
-  }
+  const handlePress = () => router.replace("/termoParticipacao");
 
   return (
-    <View style={styles.container}>
+    <WebContainer scroll contentStyle={styles.container} size="sm">
       {/* Acordeon 1 */}
       <View style={styles.accordion}>
         <TouchableOpacity
@@ -21,20 +26,22 @@ export default function Sobre() {
           style={styles.header}
         >
           <View style={styles.headerLeft}>
-            <Feather name="info" size={22} color="#7189BC" />
+            <Feather name="info" size={22} color={Colors.textSecondary} />
             <Text style={styles.headerText}>O que é</Text>
           </View>
           <AntDesign
             name={collapsed1 ? "down" : "up"}
             size={22}
-            color="#7189BC"
+            color={Colors.textSecondary}
           />
         </TouchableOpacity>
 
         <Collapsible collapsed={collapsed1}>
           <View style={styles.content}>
             <Text style={styles.contentText}>
-              Esta aplicação tem como objetivo auxiliar os usuários na gestão do bem-estar físico e mental, fornecendo ferramentas e registros personalizados.
+              Esta aplicação tem como objetivo auxiliar os usuários na gestão do
+              bem-estar físico e mental, fornecendo ferramentas e registros
+              personalizados.
             </Text>
           </View>
         </Collapsible>
@@ -47,86 +54,96 @@ export default function Sobre() {
           style={styles.header}
         >
           <View style={styles.headerLeft}>
-            <Feather name="bar-chart-2" size={22} color="#7189BC" />
+            <Feather
+              name="bar-chart-2"
+              size={22}
+              color={Colors.textSecondary}
+            />
             <Text style={styles.headerText}>Por que utilizá-lo</Text>
           </View>
           <AntDesign
             name={collapsed2 ? "down" : "up"}
             size={22}
-            color="#7189BC"
+            color={Colors.textSecondary}
           />
         </TouchableOpacity>
 
         <Collapsible collapsed={collapsed2}>
           <View style={styles.content}>
             <Text style={styles.contentText}>
-              Utilizar esta aplicação permite um acompanhamento mais eficiente dos hábitos de saúde, ajudando a identificar padrões e promover melhorias no estilo de vida.
+              Utilizar esta aplicação permite um acompanhamento mais eficiente
+              dos hábitos de saúde, ajudando a identificar padrões e promover
+              melhorias no estilo de vida.
             </Text>
           </View>
         </Collapsible>
-
-        <View style={{ alignItems: "center" }}>
-          <TouchableOpacity style={styles.button} onPress={handlePress}>
-            <Text style={styles.buttonText}>Próximo</Text>
-          </TouchableOpacity>
-        </View>
-
       </View>
-    </View>
+
+      <View style={styles.buttonWrapper}>
+        <TouchableOpacity style={styles.button} onPress={handlePress}>
+          <Text style={styles.buttonText}>Próximo</Text>
+        </TouchableOpacity>
+      </View>
+    </WebContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
-    padding: 16,
+    paddingTop: 50,
+    paddingHorizontal: Spacing.md,
+    flexGrow: 1,
+    justifyContent: "center",
   },
   accordion: {
-    marginBottom: 16,
-    borderRadius: 8,
-    overflow: 'hidden',
+    marginBottom: Spacing.md,
+    borderRadius: BorderRadius.md,
+    overflow: "hidden",
   },
   header: {
-    backgroundColor: 'rgba(113, 137, 188, 0.15)',
-    padding: 12,
-    borderRadius: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    backgroundColor: "rgba(113, 137, 188, 0.15)",
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
   },
   headerText: {
     fontSize: 17,
-    fontWeight: '500', // suaviza sem deixar "fino"
-    color: '#7189BC',
+    fontWeight: "500",
+    color: Colors.textSecondary,
   },
   content: {
-    backgroundColor: 'rgba(113, 137, 188, 0.1)',
-    padding: 12,
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
-    marginTop: 4,
+    backgroundColor: "rgba(113, 137, 188, 0.1)",
+    padding: Spacing.md,
+    borderBottomLeftRadius: BorderRadius.md,
+    borderBottomRightRadius: BorderRadius.md,
+    marginTop: Spacing.xs,
   },
   contentText: {
     fontSize: 15,
-    color: '#7189BC',
+    color: Colors.textSecondary,
     lineHeight: 22,
   },
-  button: {
-    backgroundColor: "#0033A0",
-    padding: 15,
-    borderRadius: 28,
+  buttonWrapper: {
     alignItems: "center",
-    marginTop: 30,
-    width: "25%",
+    marginTop: Spacing.xl,
+  },
+  button: {
+    backgroundColor: Colors.primary,
+    padding: 15,
+    borderRadius: BorderRadius.pill,
+    alignItems: "center",
+    paddingHorizontal: 40,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: Colors.white,
+    fontSize: FontSizes.md,
     fontWeight: "bold",
   },
 });

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Alert } from "react-native";
 import { useRequest } from "@/lib/hooks/useRequest";
+import { useUserStore } from "@/lib/stores/useUserStore";
 
 interface SensorSample {
   eixo_x: number;
@@ -44,7 +45,7 @@ export function useAutoSend(
   store: Store,
   endpoint: string,
   currentIndex: number,
-  startTime: Date
+  startTime: Date,
 ) {
   const { post } = useRequest<any, any>(); // ✅ usa seu hook de request
   const accelSamples = useRef<SensorSample[]>([]);
@@ -89,7 +90,7 @@ export function useAutoSend(
     });
 
     const payload: Payload = {
-      usuario_id: 1,
+      usuario_id: useUserStore.getState().user.id ?? 1,
       pergunta_id: currentIndex + 1,
       resposta: r.resposta,
       duracao: r.tempo,

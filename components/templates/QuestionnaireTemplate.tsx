@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Platform } from "react-native";
+import { View, Text, StyleSheet, Platform } from "react-native";
 import { useRouter } from "expo-router";
 
 import OptionGroup from "@/components/groupButtons/OptionGroup";
@@ -7,7 +7,13 @@ import BtnForm from "@/components/buttons/btnForm";
 import { useSensorLoggerMobile } from "@/lib/hooks/useSensorLoggerMobile";
 import { useSensorLoggerWeb } from "@/lib/hooks/useSensorLoggerWeb";
 import { useRequest } from "@/lib/hooks/useRequest";
-import { useAccelerometerWeb, useGyroscopeWeb } from "@/lib/hooks/useSampleSensor";
+import {
+  useAccelerometerWeb,
+  useGyroscopeWeb,
+} from "@/lib/hooks/useSampleSensor";
+import { useUserStore } from "@/lib/stores/useUserStore";
+import WebContainer from "@/components/layout/WebContainer";
+import { Colors } from "@/lib/constants/theme";
 
 interface SensorSample {
   timestamp: string;
@@ -53,6 +59,7 @@ export default function QuestionnaireTemplate({
   endpoint,
 }: QuestionnaireTemplateProps) {
   const router = useRouter();
+  const { user } = useUserStore();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [tempoRespostaRegistrado, setTempoRespostaRegistrado] = useState(false);
   const [startTime, setStartTime] = useState<Date>(new Date());
@@ -111,13 +118,12 @@ export default function QuestionnaireTemplate({
       const dados_sensores = accelBuffer.current.map((acc, i) => ({
         timestamp: acc.timestamp,
         acelerometro: { ...acc },
-        giroscopio:
-          gyroBuffer.current[i] || {
-            eixo_x: 0,
-            eixo_y: 0,
-            eixo_z: 0,
-            timestamp: acc.timestamp,
-          },
+        giroscopio: gyroBuffer.current[i] || {
+          eixo_x: 0,
+          eixo_y: 0,
+          eixo_z: 0,
+          timestamp: acc.timestamp,
+        },
       }));
 
       if (dados_sensores.length === 0) return;
@@ -130,7 +136,7 @@ export default function QuestionnaireTemplate({
 
       // Cria payload com snapshot dos dados
       const payload = {
-        usuario_id: 1,
+        usuario_id: user.id ?? 1,
         pergunta_id: currentIndex + 1,
         resposta: r?.resposta ?? 0,
         duracao: tempoAtual,
@@ -150,7 +156,7 @@ export default function QuestionnaireTemplate({
       post(`${endpoint}`, payload)
         .then(() => {
           console.log(
-            `✅ Enviado ${dados_sensores.length} amostras (index ${currentIndex})`
+            `✅ Enviado ${dados_sensores.length} amostras (index ${currentIndex})`,
           );
         })
         .catch((err: any) => {
@@ -193,27 +199,31 @@ export default function QuestionnaireTemplate({
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={{ alignItems: "flex-start" }}>
-        <Text style={{ color: "#0839A2", fontSize: 16 }}>
-          PERGUNTA {currentIndex + 1} de {questions.length}
-        </Text>
-        <Text style={styles.question}>{current.text}</Text>
+    <WebContainer scroll backgroundColor={Colors.background} size="md">
+      <View style={styles.container}>
+        <View style={{ alignItems: "flex-start" }}>
+          <Text style={{ color: Colors.primaryDark, fontSize: 16 }}>
+            PERGUNTA {currentIndex + 1} de {questions.length}
+          </Text>
+          <Text style={styles.question}>{current.text}</Text>
+        </View>
+
+        <OptionGroup
+          options={current.options}
+          selected={respostaAtual}
+          onSelect={handleAnswer}
+        />
+
+        <BtnForm
+          title={
+            currentIndex === questions.length - 1 ? "Finalizar" : "Próximo"
+          }
+          color={Colors.accent}
+          onPress={handleNext}
+          disabled={false}
+        />
       </View>
-
-      <OptionGroup
-        options={current.options}
-        selected={respostaAtual}
-        onSelect={handleAnswer}
-      />
-
-      <BtnForm
-        title={currentIndex === questions.length - 1 ? "Finalizar" : "Próximo"}
-        color="#4F46E5"
-        onPress={handleNext}
-        disabled={false}
-      />
-    </ScrollView>
+    </WebContainer>
   );
 }
 
@@ -224,6 +234,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 30,
-    color: "#7189BC",
+    color: Colors.textSecondary,
   },
 });

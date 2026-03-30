@@ -7,15 +7,21 @@ import {
   RegisterOptions,
 } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
+import {
+  Colors,
+  FontSizes,
+  Spacing,
+  BorderRadius,
+} from "@/lib/constants/theme";
 
 type Props<T extends FieldValues> = {
-  label?: string;
-  placeholder: string;
-  name: FieldPath<T>;
-  control: Control<T>;
-  rules?: RegisterOptions<T, FieldPath<T>>;
-  iconName?: keyof typeof Ionicons.glyphMap;
-  width?: any;
+  readonly label?: string;
+  readonly placeholder: string;
+  readonly name: FieldPath<T>;
+  readonly control: Control<T>;
+  readonly rules?: RegisterOptions<T, FieldPath<T>>;
+  readonly iconName?: keyof typeof Ionicons.glyphMap;
+  readonly width?: any;
 };
 
 export default function InputText<T extends FieldValues>({
@@ -32,10 +38,7 @@ export default function InputText<T extends FieldValues>({
       control={control}
       name={name}
       rules={rules}
-      render={({
-        field: { onChange, value },
-        fieldState: { error },
-      }) => (
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
         <View style={[styles.inputContainer, { width }]}>
           <Text style={styles.label}>{label}</Text>
           <View style={styles.inputWrapper}>
@@ -73,13 +76,13 @@ export default function InputText<T extends FieldValues>({
 
 const styles = StyleSheet.create({
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: Spacing.lg,
   },
   label: {
-    fontSize: 16,
+    fontSize: FontSizes.md,
     fontWeight: "600",
-    color: "#7189BC",
-    marginBottom: 8,
+    color: Colors.textSecondary,
+    marginBottom: Spacing.xs,
   },
   inputWrapper: {
     position: "relative",
@@ -95,14 +98,14 @@ const styles = StyleSheet.create({
     padding: 14,
     paddingLeft: 18,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
-    borderRadius: 12,
-    backgroundColor: "#fff",
-    fontSize: 16,
+    borderColor: Colors.border,
+    borderRadius: BorderRadius.md,
+    backgroundColor: Colors.white,
+    fontSize: FontSizes.md,
   },
   errorText: {
     marginTop: 6,
-    color: "red",
-    fontSize: 13,
+    color: Colors.error,
+    fontSize: FontSizes.sm,
   },
 });
