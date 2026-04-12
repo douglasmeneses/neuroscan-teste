@@ -5,5 +5,5 @@ export default {
   },
   extra: {
     api: process.env.EXPO_PUBLIC_API_URL,
-  }
-}
+  },
+};
