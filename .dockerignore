@@ -1,0 +1,33 @@
+# ── Version control ───────────────────────────
+.git/
+.gitignore
+
+# ── Dependencies (re-installed inside the image) ─
+node_modules/
+
+# ── Expo / Metro cache ─────────────────────────
+.expo/
+.metro-health-check*
+
+# ── Build outputs ──────────────────────────────
+dist/
+web-build/
+
+# ── Native targets (not needed for web build) ──
+android/
+ios/
+
+# ── Local env / secrets ─────────────────────────
+.env
+.env.*
+*.local
+
+# ── Editor / OS artefacts ──────────────────────
+.DS_Store
+*.pem
+.vscode/
+*.tsbuildinfo
+
+# ── Docs / CI artefacts ───────────────────────
+*.md
+.github/

@@ -4,12 +4,11 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  Alert,
   Modal,
   ActivityIndicator,
 } from "react-native";
 import { useForm } from "react-hook-form";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 
 import useInicialForm from "@/lib/stores/useInicialForm";
 import { useUserStore } from "@/lib/stores/useUserStore";
@@ -91,8 +90,7 @@ const toastStyles = StyleSheet.create({
 });
 
 export default function FormInicial() {
-  //const api = process.env.EXPO_PUBLIC_API_URL;
-  const api = "http://187.77.61.91:3000/api";
+  const api = process.env.EXPO_PUBLIC_API_URL;
 
   const router = useRouter();
   const { setFormData } = useInicialForm();

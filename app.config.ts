@@ -4,6 +4,6 @@ export default {
     typedRoutes: true,
   },
   extra: {
-    api: process.env.API,
+    api: process.env.EXPO_PUBLIC_API_URL,
   }
 }

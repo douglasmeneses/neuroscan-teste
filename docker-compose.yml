@@ -1,0 +1,24 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # O frontend é servido estaticamente, então o browser precisa de um
+        # endereço alcançável. Usamos /api como prefixo e o Nginx faz proxy
+        # interno para o container neuroscan-api, evitando CORS.
+        EXPO_PUBLIC_API_URL: ${EXPO_PUBLIC_API_URL:-/api}
+    image: neuro-scan-app:latest
+    container_name: neuro-scan-web
+    ports:
+      # Internamente o container sempre ouve na 80 (Nginx).
+      # Na VPS use uma porta livre (ex: 3001) e aponte o Nginx do host para ela.
+      # Em dev local, PORT=80 sobe diretamente na 80 do host.
+      - "${PORT:-3001}:80"
+    restart: unless-stopped
+    networks:
+      - neuroscan_net
+
+networks:
+  neuroscan_net:
+    external: true
